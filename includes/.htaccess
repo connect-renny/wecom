@@ -1,0 +1,9 @@
+# Partials are pulled in with include(); nothing here is a page in its own
+# right, so serving them directly would only ever emit a stray fragment.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>

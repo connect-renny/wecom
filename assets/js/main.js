@@ -546,6 +546,75 @@ if (heroEl) {
   });
 }
 
+// ─── Inside pages: detail artwork wipes in on scroll ─────────────────────────
+// AOS only fades and slides, and these panels open with a curtain instead, so
+// the trigger is its own observer. Everything the reveal looks like lives in
+// the stylesheet — all that happens here is the class going on, once.
+(function () {
+  var panels = document.querySelectorAll(".feature-media");
+  if (!panels.length) return;
+
+  function reveal(el) {
+    el.classList.add("is-revealed");
+  }
+
+  // No motion wanted, or nothing to observe with: show them as they are
+  if (
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    !("IntersectionObserver" in window)
+  ) {
+    panels.forEach(reveal);
+    return;
+  }
+
+  var watcher = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        watcher.unobserve(entry.target); // runs once
+        reveal(entry.target);
+      });
+    },
+    { threshold: 0.25 },
+  );
+
+  panels.forEach(function (el) {
+    watcher.observe(el);
+  });
+})();
+
+// ─── Inside-page hero: same float, driven off a class ────────────────────────
+// The interior heroes each stack a different set of pieces, so rather than
+// naming them one by one they opt in with .hero-inside-float. Depth rises with
+// each piece in source order, which puts the ring furthest back and whatever is
+// nearest the front — the small cards — moving most.
+var heroInsideEl = document.querySelector(".hero-inside");
+if (heroInsideEl) {
+  var insideLayers = Array.prototype.slice.call(
+    heroInsideEl.querySelectorAll(".hero-inside-float"),
+  );
+
+  if (insideLayers.length) {
+    heroInsideEl.addEventListener("mousemove", function (e) {
+      var rect = heroInsideEl.getBoundingClientRect();
+      var nx = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 … 0.5
+      var ny = (e.clientY - rect.top) / rect.height - 0.5;
+      insideLayers.forEach(function (el, i) {
+        var depth = 18 + i * 12;
+        el.style.setProperty("--px", (-nx * depth).toFixed(1) + "px");
+        el.style.setProperty("--py", (-ny * depth).toFixed(1) + "px");
+      });
+    });
+
+    heroInsideEl.addEventListener("mouseleave", function () {
+      insideLayers.forEach(function (el) {
+        el.style.setProperty("--px", "0px");
+        el.style.setProperty("--py", "0px");
+      });
+    });
+  }
+}
+
 // ─── Hero banner slider ──────────────────────────────────────────────────────
 const swiperBanner = new Swiper(".swiper-banner", {
   loop: true,

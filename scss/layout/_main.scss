@@ -2,4 +2,17 @@
   @media (max-width: 1920px) {
     max-width: 1320px;
   }
+
+  // Below ~1344 the 1320 cap stops biting and the container becomes full
+  // width, leaving Bootstrap's 12px gutter as the only thing between the copy
+  // and the screen edge — on a laptop the headline ends up almost touching it.
+  // These give the content a real margin again at the sizes where it is the
+  // viewport, not the cap, doing the constraining.
+  @media (max-width: 1343px) {
+    padding-inline: 32px;
+  }
+
+  @media (max-width: 767px) {
+    padding-inline: 20px;
+  }
 }

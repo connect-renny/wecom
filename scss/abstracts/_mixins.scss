@@ -1,0 +1,4 @@
+// Transition
+@mixin transEase($property: all, $easing: ease-out) {
+  transition: $property var(--transition-duration) $easing;
+}

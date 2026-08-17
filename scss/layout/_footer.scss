@@ -1,0 +1,311 @@
+.footer {
+  padding: 40px 0 60px;
+  background: var(--white);
+}
+
+// ─── Certifications strip ────────────────────────────────────────────────────
+.footer-certs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  flex-wrap: wrap;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.footer-certs-title {
+  margin: 0 0 8px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: #0f2873;
+}
+
+.footer-certs-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 44px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  // Badges are supplied at their own sizes, so height is capped rather than
+  // width — that keeps them optically level rather than uniformly wide
+  img {
+    display: block;
+    width: auto;
+    max-height: 44px;
+  }
+}
+
+// ─── Brand + link columns ────────────────────────────────────────────────────
+.footer-main {
+  display: grid;
+  // Brand column is widest, matching the design's 333px of 1321
+  grid-template-columns: 1.35fr repeat(4, 1fr);
+  gap: 40px;
+  padding: 56px 0 64px;
+}
+
+.footer-logo {
+  display: block;
+  width: 226px;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 28px;
+}
+
+.footer-about {
+  max-width: 280px;
+  margin: 0 0 36px;
+  font-size: var(--fs-sm);
+  line-height: 1.8;
+  color: var(--color-heading);
+}
+
+.footer-social {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--color-border-soft);
+    border-radius: 8px;
+    color: var(--color-heading);
+    font-size: 16px;
+    transition:
+      transform 0.35s var(--ease-out-quint),
+      border-color 0.3s ease-out,
+      background 0.3s ease-out,
+      color 0.3s ease-out;
+
+    &:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Columns 2 and 3 stack two groups; 4 and 5 carry one each
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 52px;
+}
+
+.footer-heading {
+  margin: 0 0 22px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-heading);
+}
+
+.footer-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li + li {
+    margin-top: 18px;
+  }
+
+  a {
+    position: relative;
+    font-size: var(--fs-sm);
+    color: var(--color-heading);
+    transition: color 0.3s ease-out;
+
+    // Rule wipes in from the left and retracts to the right, as elsewhere
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -3px;
+      height: 1px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: right center;
+      transition: transform 0.35s var(--ease-out-quint);
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+
+      &::after {
+        transform: scaleX(1);
+        transform-origin: left center;
+      }
+    }
+  }
+}
+
+// ─── Bottom bar ──────────────────────────────────────────────────────────────
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-top: 28px;
+  border-top: 1px solid var(--color-border-soft);
+}
+
+.footer-copy {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.footer-security {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  transition: color 0.3s ease-out;
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+// ─── Footer: responsive ──────────────────────────────────────────────────────
+// Five columns — brand plus four link groups — and a certifications strip whose
+// six badges are supplied at their own widths. The columns step down first; the
+// badges need a different arrangement rather than just a smaller gap.
+@media (max-width: 1399px) {
+  .footer-certs-list {
+    gap: 32px;
+  }
+
+  .footer-main {
+    gap: 32px;
+  }
+
+  .footer-col {
+    gap: 44px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .footer-certs-list {
+    gap: 28px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px 32px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  // The brand column now spans the full row, and the 280px cap that suited a
+  // 333px column leaves the blurb as a narrow ribbon across it
+  .footer-about {
+    max-width: 460px;
+  }
+}
+
+@media (max-width: 991px) {
+  .footer {
+    padding: 32px 0 48px;
+  }
+
+  .footer-certs {
+    gap: 24px;
+    padding-bottom: 28px;
+  }
+
+  .footer-certs-list img {
+    max-height: 38px;
+  }
+
+  .footer-main {
+    gap: 36px 28px;
+    padding: 44px 0 52px;
+  }
+
+  .footer-col {
+    gap: 40px;
+  }
+
+  .footer-heading {
+    margin-bottom: 18px;
+  }
+
+  .footer-links li + li {
+    margin-top: 14px;
+  }
+}
+
+@media (max-width: 767px) {
+  .footer-certs {
+    gap: 24px;
+  }
+
+  // Six badges of differing widths in a flex row wrap 4 + 2 here, which reads
+  // as a mistake. A three-wide grid gives an even 3 + 3 and keeps them
+  // optically centred in their cells whatever each badge's own width is.
+  .footer-certs-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    gap: 24px 16px;
+    width: 100%;
+  }
+
+  .footer-certs-list img {
+    max-height: 34px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+    padding: 40px 0 48px;
+  }
+
+  .footer-about {
+    max-width: none;
+  }
+
+  .footer-col {
+    gap: 36px;
+  }
+}
+
+@media (max-width: 575px) {
+  .footer-logo {
+    width: 190px;
+    margin-bottom: 22px;
+  }
+
+  .footer-certs-list img {
+    max-height: 30px;
+  }
+
+  .footer-main {
+    gap: 32px 20px;
+  }
+
+  .footer-heading {
+    font-size: var(--fs-base);
+  }
+
+  // Copyright and the security link sit at opposite ends of a row that is no
+  // longer wide enough to justify them apart
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

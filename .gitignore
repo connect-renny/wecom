@@ -1,0 +1,16 @@
+# Editor / tooling
+.vscode/
+.claude/
+.idea/
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Dependencies / build noise
+node_modules/
+.sass-cache/
+*.css.map
+*.log

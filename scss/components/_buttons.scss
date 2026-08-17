@@ -1,0 +1,347 @@
+// ─── Hero buttons ────────────────────────────────────────────────────────────
+.btn-navy,
+.btn-ghost,
+.btn-outline {
+  position: relative;
+  // Own stacking context, so the fill below can sit under the label without
+  // dropping behind the button itself
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 30px;
+  border-radius: 8px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  // Named rather than `all`: `all` also animates layout properties, so every
+  // one of them costs a repaint and the whole thing runs off a single curve
+  transition:
+    transform 0.35s var(--ease-out-quint),
+    box-shadow 0.35s var(--ease-out-quint),
+    border-color 0.3s ease-out,
+    // Trails the fill slightly, so the label flips once there is something
+    // behind it rather than mid-sweep
+    color 0.25s ease-out 0.06s;
+
+  // Hover colour rises from the bottom edge instead of snapping
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: scaleY(0);
+    transform-origin: center bottom;
+    transition: transform 0.45s var(--ease-out-quint);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+
+    &::before {
+      transform: scaleY(1);
+    }
+  }
+
+  // Pressed — drops back down, and quickly, so the click feels physical
+  &:active {
+    transform: translateY(0);
+    transition-duration: 0.08s;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+.btn-navy {
+  border: 1px solid var(--color-navy);
+  background: var(--color-navy);
+  color: var(--white);
+
+  &::before {
+    background: var(--color-accent);
+  }
+
+  &:hover {
+    border-color: var(--color-accent);
+    color: var(--white);
+    box-shadow: 0 10px 24px rgba(53, 180, 234, 0.35);
+  }
+}
+
+// Secondary on a dark background — white on translucent white
+.btn-ghost {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: transparent;
+  color: var(--white);
+
+  &::before {
+    background: var(--white);
+  }
+
+  &:hover {
+    border-color: var(--white);
+    color: var(--color-navy);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Secondary on a light background — the ghost's white-on-white would be
+// invisible here, so it sits on the page in navy instead
+.btn-outline {
+  border: 1px solid var(--color-navy);
+  background: var(--white);
+  color: var(--color-navy);
+
+  &::before {
+    background: var(--color-navy);
+  }
+
+  &:hover {
+    color: var(--white);
+    box-shadow: 0 10px 24px rgba(27, 47, 126, 0.25);
+  }
+}
+
+// ─── Talk to us (floating) ───────────────────────────────────────────────────
+.whatsapp-float {
+  position: fixed;
+  right: 24px;
+  bottom: 150px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  @include transEase;
+
+  svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  // Springs out slightly past its resting size before settling
+  &:hover {
+    transform: scale(1.12);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+    transition:
+      transform 0.4s var(--ease-back),
+      box-shadow 0.35s var(--ease-out-quint);
+  }
+
+  &:active {
+    transform: scale(1.02);
+    transition-duration: 0.08s;
+  }
+}
+
+.talk-to-us {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 24px;
+  border-radius: 999px;
+  background: var(--color-navy);
+  color: var(--white);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  transition:
+    transform 0.35s var(--ease-out-quint),
+    background 0.3s ease-out,
+    box-shadow 0.35s var(--ease-out-quint);
+
+  &:hover {
+    background: var(--color-accent);
+    color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(53, 180, 234, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+    transition-duration: 0.08s;
+  }
+}
+
+// Animated sound-wave bars inside the button
+.talk-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 18px;
+
+  span {
+    width: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transform-origin: center;
+    animation: talkWave 0.9s ease-in-out infinite alternate;
+  }
+
+  // Center bar tallest, gradually shorter toward both sides
+  span:nth-child(1) {
+    height: 30%;
+    animation-delay: 0s;
+  }
+  span:nth-child(2) {
+    height: 65%;
+    animation-delay: 0.2s;
+  }
+  span:nth-child(3) {
+    height: 100%;
+    animation-delay: 0.1s;
+  }
+  span:nth-child(4) {
+    height: 65%;
+    animation-delay: 0.3s;
+  }
+  span:nth-child(5) {
+    height: 30%;
+    animation-delay: 0.15s;
+  }
+}
+
+.btn-primary {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  border: 1px solid var(--white);
+  background: transparent;
+  color: var(--color-brand);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    transform 0.35s var(--ease-out-quint),
+    color 0.25s ease-out 0.06s;
+
+  // White fill collapses upward, so the transparent base is uncovered from the
+  // bottom edge — the same direction of travel as the filled buttons
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--white);
+    transform-origin: center top;
+    transition: transform 0.45s var(--ease-out-quint);
+  }
+
+  &:hover {
+    color: var(--white);
+    transform: translateY(-2px);
+
+    &::before {
+      transform: scaleY(0);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    transition-duration: 0.08s;
+  }
+}
+
+.return-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 88px;
+  right: 24px;
+  width: 50px;
+  height: 50px;
+  border: 0;
+  background: var(--color-brand);
+  border-radius: 50%;
+  text-align: center;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  opacity: 0;
+  cursor: pointer;
+  @include transEase;
+  z-index: 10;
+
+  span {
+    position: relative;
+    z-index: 1;
+  }
+
+  img {
+    position: relative;
+    width: 20px;
+    animation: upBounce 2s infinite;
+  }
+
+  &.visible {
+    display: block;
+  }
+
+  &:hover span img {
+    top: 5px;
+  }
+}
+
+// Circular scroll-progress ring around the back-to-top button
+.return-top-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  pointer-events: none;
+
+  circle {
+    fill: none;
+    stroke-width: 2.5;
+  }
+}
+.return-top-ring-track {
+  stroke: rgba(255, 255, 255, 0.25);
+}
+.return-top-ring-progress {
+  stroke: var(--color-accent);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+// ─── Reduced motion ──────────────────────────────────────────────────────────
+// The lift and the sweep go; the colour change stays, so hover still reads as
+// hover rather than giving no feedback at all.
+@media (prefers-reduced-motion: reduce) {
+  .btn-navy,
+  .btn-ghost,
+  .btn-outline,
+  .btn-primary,
+  .btn-outline-white,
+  .btn-demo,
+  .talk-to-us,
+  .whatsapp-float {
+    &:hover,
+    &:active {
+      transform: none;
+    }
+
+    &::before {
+      transition: none;
+    }
+  }
+}

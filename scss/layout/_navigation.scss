@@ -1,0 +1,1083 @@
+.navbar-main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 14px 0 0;
+  background: transparent;
+  @include transEase(background);
+
+  &.navbar-fixed {
+    background: var(--color-navy);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 12px 0px;
+  }
+
+  // An open dropdown needs the bar behind it to be solid — at the top of the
+  // page it is otherwise transparent over the dimmed hero
+  &.has-open-mega {
+    background: var(--color-navy);
+  }
+
+  // Lifts the bar above .nav-backdrop, which is fixed but still painted inside
+  // this element's stacking context
+  > .container {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 18, 42, 0.42);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.35s var(--ease-out-quint),
+    visibility 0s linear 0.35s;
+}
+
+.has-open-mega .nav-backdrop {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+// ─── Top tier: brand + actions ───────────────────────────────────────────────
+.navbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 16px;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+
+  img {
+    width: 170px;
+    height: auto;
+  }
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.navbar-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--white);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+
+  img {
+    width: 20px;
+    height: auto;
+  }
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+.navbar-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--white);
+  font-size: var(--fs-md);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+.navbar-lang {
+  gap: 6px;
+
+  i {
+    font-size: 11px;
+  }
+}
+
+// Hamburger toggler — declared here rather than at the end of the file so the
+// drawer breakpoint below can turn it on; as a later rule its `display: none`
+// would win over the media query at equal specificity
+.navbar-toggler {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  z-index: 110;
+
+  span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    margin: 0 auto;
+    background: var(--white);
+    @include transEase(transform);
+  }
+
+  &.is-open span {
+    &:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    &:nth-child(2) {
+      opacity: 0;
+    }
+    &:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+  }
+}
+
+// ─── Bottom tier: primary menu ───────────────────────────────────────────────
+// The padding sits on .navbar-menu and the layout on .navbar-menu-inner: the
+// mobile drawer collapses the outer element to a zero-height grid row, and any
+// padding left on it would keep the closed drawer visible as a navy band.
+.navbar-menu {
+  padding-bottom: 16px;
+}
+
+.navbar-menu-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.navbar-nav {
+  display: flex;
+  flex-direction: row; // override Bootstrap's column default
+  align-items: center;
+  gap: 36px;
+
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0; // override Bootstrap's .nav-link padding
+    color: var(--white);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+
+    .nav-chevron {
+      font-size: 11px;
+      @include transEase(transform);
+    }
+
+    // Carried for the drawer, where every row is an icon + label; the bar
+    // itself stays text-only
+    .nav-link-icon {
+      display: none;
+    }
+
+    // Full width from the start and scaled instead of grown: `width` forces
+    // layout on every frame, `transform` does not. The origin flip also makes
+    // it wipe in from the left and retract to the right, rather than
+    // rewinding the way it came.
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 100%;
+      height: 2px;
+      background: var(--color-accent);
+      transform: scaleX(0);
+      transform-origin: right center;
+      transition: transform 0.4s var(--ease-out-quint);
+    }
+
+    &.active {
+      color: var(--white);
+    }
+
+    &:hover,
+    &.active {
+      &::after {
+        transform: scaleX(1);
+        transform-origin: left center;
+      }
+    }
+
+    &:hover .nav-chevron,
+    &[aria-expanded="true"] .nav-chevron {
+      transform: rotate(180deg);
+    }
+
+    &[aria-expanded="true"]::after {
+      transform: scaleX(1);
+      transform-origin: left center;
+    }
+  }
+}
+
+.navbar-nav-right {
+  gap: 32px;
+}
+
+// Drawer-only furniture; the bar carries these in its top tier instead
+.navbar-drawer-foot,
+.navbar-drawer-head {
+  display: none;
+}
+
+// ─── Mega menu ───────────────────────────────────────────────────────────────
+// The panel hangs off its own <li> rather than the header, so each one sits
+// under its trigger. The gap between link and panel is padding on .mega, not a
+// top offset — the pointer has to cross that gap, and dead space there would
+// close the menu on the way down.
+.has-mega {
+  position: relative;
+}
+
+.mega {
+  position: absolute;
+  top: 100%;
+  left: -22px;
+  z-index: 20;
+  padding-top: 26px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition:
+    opacity 0.3s var(--ease-out-quint),
+    transform 0.3s var(--ease-out-quint),
+    visibility 0s linear 0.3s;
+}
+
+// Anchoring the right-hand nav's panels to their left edge would push them off
+// the viewport, so those hang from the right instead
+.mega-end {
+  left: auto;
+  right: -22px;
+}
+
+.has-mega.is-open .mega {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+.mega-inner {
+  display: grid;
+  grid-template-columns: auto 288px;
+  width: max-content;
+  max-width: min(92vw, 980px);
+  overflow: hidden;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow:
+    0 26px 60px rgba(8, 18, 42, 0.28),
+    0 2px 6px rgba(8, 18, 42, 0.1);
+}
+
+.mega-links {
+  padding: 24px 26px 26px;
+}
+
+.mega-label {
+  margin: 0 0 12px;
+  padding-left: 12px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.mega-list {
+  display: grid;
+  gap: 2px;
+}
+
+// Column flow, not the grid default of row flow: a flat list of links reads
+// down one column and then down the next, and filling by row would leave the
+// odd item stranded on its own at the bottom left. --rows is per menu, since
+// it is what decides where the list breaks.
+.mega-list-2col {
+  grid-auto-flow: column;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(var(--rows, 4), auto);
+  column-gap: 14px;
+}
+
+.mega-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: var(--color-heading);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  line-height: 1.3;
+  transition:
+    background 0.25s ease-out,
+    color 0.25s ease-out;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-icon-bg);
+    color: var(--color-brand);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+.mega-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--color-icon-bg);
+  color: var(--color-brand);
+  font-size: var(--fs-md);
+  transition:
+    background 0.25s ease-out,
+    color 0.25s ease-out,
+    transform 0.4s var(--ease-back);
+}
+
+.mega-link:hover .mega-link-icon {
+  background: var(--color-brand);
+  color: var(--white);
+  transform: scale(1.06);
+}
+
+// ─── Mega menu: feature panel ────────────────────────────────────────────────
+.mega-feature {
+  padding: 24px 26px 26px;
+  border-left: 1px solid var(--color-border-soft);
+  background: linear-gradient(180deg, #f7fafd, var(--white));
+}
+
+.mega-card {
+  display: block;
+  color: inherit;
+}
+
+.mega-card-media {
+  display: block;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 16 / 9;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out-quint);
+  }
+}
+
+.mega-card:hover .mega-card-media img {
+  transform: scale(1.06);
+}
+
+.mega-card-title {
+  display: block;
+  margin-bottom: 8px;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  line-height: 1.3;
+  color: var(--color-heading);
+}
+
+.mega-card-text {
+  display: block;
+  margin-bottom: 14px;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.mega-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--color-brand);
+  @include transEase(color);
+
+  i {
+    @include transEase(transform);
+  }
+}
+
+.mega-card:hover .mega-card-link {
+  color: var(--color-accent);
+
+  i {
+    transform: translateX(5px);
+  }
+}
+
+// Links arrive just behind the panel, staggered along the reading order
+.has-mega .mega-link,
+.has-mega .mega-card {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.32s var(--ease-out-quint),
+    transform 0.32s var(--ease-out-quint),
+    background 0.25s ease-out,
+    color 0.25s ease-out;
+}
+
+.has-mega.is-open .mega-link,
+.has-mega.is-open .mega-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@for $i from 1 through 10 {
+  .has-mega.is-open .mega-link:nth-child(#{$i}) {
+    transition-delay: #{60 + ($i - 1) * 22}ms;
+  }
+}
+
+.has-mega.is-open .mega-card {
+  transition-delay: 120ms;
+}
+
+// ─── Mega menu: narrower viewports ───────────────────────────────────────────
+// Below ~1280 the two-across panel runs out of room, so the feature card drops
+// under the links instead of sitting beside them
+@media (max-width: 1279px) {
+  .mega-inner {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: min(92vw, 560px);
+  }
+
+  .mega-feature {
+    border-left: 0;
+    border-top: 1px solid var(--color-border-soft);
+  }
+}
+
+// ─── Nav: small laptop ───────────────────────────────────────────────────────
+// The bar is a single row of ten items plus a button, so it runs out of room
+// well before the tablet breakpoint — the gaps close up before anything wraps
+@media (max-width: 1399px) {
+  .navbar-nav {
+    gap: 26px;
+  }
+
+  .navbar-nav-right {
+    gap: 24px;
+  }
+
+  .navbar-actions {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .navbar-brand img {
+    width: 148px;
+  }
+
+  .navbar-nav {
+    gap: 18px;
+  }
+
+  .navbar-nav-right {
+    gap: 16px;
+  }
+
+  .navbar-actions {
+    gap: 14px;
+  }
+
+  .btn-demo {
+    padding: 10px 18px;
+  }
+
+  // The two action labels are the first thing that can go — the icons still
+  // carry the meaning and the row is what is short of space
+  .navbar-action span {
+    display: none;
+  }
+
+  .navbar-lang span {
+    display: inline;
+  }
+}
+
+// ─── Nav: tablet and below — off-canvas drawer ───────────────────────────────
+// The panel is fixed to the right edge and slides in over the page. Being fixed
+// takes it out of .container's flow, so it carries its own horizontal padding
+// rather than inheriting the gutter.
+//
+// Stacking: .navbar-main is a z-index: 100 context, and at desktop its
+// > .container is lifted to 1 so the bar sits above .nav-backdrop for the mega
+// menu. Here that lift is dropped, which puts the container's children back
+// into .navbar-main's own context — so the scrim can be raised over the top
+// tier (dimming the brand and hamburger with everything else) while the drawer
+// stays above the scrim.
+@media (max-width: 991px) {
+  .navbar-toggler {
+    display: flex;
+    // Would otherwise paint over the open drawer from inside the same context
+    z-index: auto;
+  }
+
+  .navbar-main > .container {
+    z-index: auto;
+  }
+
+  .nav-backdrop {
+    display: block;
+    z-index: 1;
+  }
+
+  .navbar-main.is-nav-open .nav-backdrop {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  .navbar-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    width: min(86vw, 380px);
+    // Android and iOS both report 100vh as the *retracted* URL-bar height, so
+    // a full-height panel sized in vh runs past the visible area while the bar
+    // is on screen. dvh tracks the bar; vh stays as the fallback.
+    height: 100vh;
+    height: 100dvh;
+    padding-bottom: 0;
+    background: var(--color-navy);
+    box-shadow: -22px 0 60px rgba(4, 10, 26, 0.45);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition:
+      transform 0.42s var(--ease-out-quint),
+      visibility 0s linear 0.42s;
+  }
+
+  .navbar-menu.is-open {
+    transform: translateX(0);
+    visibility: visible;
+    transition-delay: 0s, 0s;
+  }
+
+  .navbar-drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex: 0 0 auto;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .navbar-drawer-logo {
+    width: 130px;
+    height: auto;
+  }
+
+  .navbar-drawer-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 11px;
+    background: transparent;
+    color: var(--white);
+    font-size: var(--fs-base);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    // Named properties, not `all`: the panel it sits in animates its own
+    // visibility, and `all` makes this button transition that inherited flip
+    // too — so it stayed hidden (and unfocusable) for the first 0.3s of every
+    // open, which is exactly when focus is meant to land on it
+    transition:
+      border-color var(--transition-duration) ease-out,
+      background var(--transition-duration) ease-out,
+      color var(--transition-duration) ease-out;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--color-accent);
+      background: rgba(53, 180, 234, 0.14);
+    }
+  }
+
+  // Takes the remaining height under the drawer head and scrolls on its own
+  .navbar-menu-inner {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 10px 20px 28px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    // Explicit background feedback already covers these rows; the platform's
+    // grey tap flash on top of it just looks like a rendering fault
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  // Rows arrive just behind the drawer itself, top down. Only the first few
+  // need a delay — past six rows the panel has finished opening anyway.
+  .navbar-nav > li,
+  .navbar-drawer-foot {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition:
+      opacity 0.3s var(--ease-out-quint),
+      transform 0.3s var(--ease-out-quint);
+  }
+
+  .navbar-menu.is-open .navbar-nav > li,
+  .navbar-menu.is-open .navbar-drawer-foot {
+    opacity: 1;
+    transform: none;
+  }
+
+  @for $i from 1 through 6 {
+    .navbar-menu.is-open .navbar-nav > li:nth-child(#{$i}) {
+      transition-delay: #{70 + ($i - 1) * 35}ms;
+    }
+  }
+
+  .navbar-nav {
+    display: block;
+    gap: 0;
+  }
+
+  // 56px rows: comfortably past the 44px touch target minimum, and tall enough
+  // that the icon column reads as a column rather than decoration
+  .navbar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 56px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: var(--fs-base);
+    font-weight: var(--fw-medium);
+
+    // The sliding underline belongs to the horizontal bar; stacked rows use a
+    // filled background for the same job
+    &::after {
+      display: none;
+    }
+
+    &:hover,
+    &:focus-visible,
+    &[aria-expanded="true"] {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .nav-link-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--color-accent);
+      font-size: var(--fs-md);
+      transition:
+        background var(--transition-duration) ease-out,
+        color var(--transition-duration) ease-out;
+    }
+
+    &:hover .nav-link-icon,
+    &[aria-expanded="true"] .nav-link-icon {
+      background: var(--color-accent);
+      color: var(--color-navy);
+    }
+
+    // Pushes the chevron to the far edge without a justify-content rule that
+    // would also spread the icon away from its label
+    .nav-link-label {
+      flex: 1 1 auto;
+    }
+
+    .nav-chevron {
+      flex: 0 0 auto;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+  }
+
+  .navbar-nav .nav-link.active {
+    background: rgba(53, 180, 234, 0.14);
+
+    .nav-link-icon {
+      background: var(--color-accent);
+      color: var(--color-navy);
+    }
+  }
+
+  .navbar-nav > li + li {
+    margin-top: 2px;
+  }
+
+  // A rule between the two groups keeps the drawer from reading as one
+  // undifferentiated list of ten
+  .navbar-nav-right {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .btn-demo {
+    display: flex;
+    width: 100%;
+    margin-top: 16px;
+    padding: 15px 26px;
+    font-size: var(--fs-base);
+  }
+
+  // ─── Drawer footer ─────────────────────────────────────────────────────────
+  .navbar-drawer-foot {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .drawer-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 11px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    // Named rather than `all`, for the same reason as the close button
+    transition:
+      border-color var(--transition-duration) ease-out,
+      background var(--transition-duration) ease-out,
+      color var(--transition-duration) ease-out;
+
+    i {
+      font-size: var(--fs-md);
+      color: var(--color-accent);
+    }
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--color-accent);
+      background: rgba(53, 180, 234, 0.12);
+      color: var(--white);
+    }
+  }
+
+  // ─── Dropdowns become accordions ───────────────────────────────────────────
+  // Stays visibility: hidden while collapsed, not just clipped. The row is 0fr
+  // and .mega-inner hides the overflow, so the links look gone — but clipped
+  // content is still focusable, and tabbing through the drawer was landing on
+  // every sub-link of every closed section (49 stops instead of 14). Hiding it
+  // takes them out of the tab order and off screen readers too; the delay holds
+  // it visible for the length of the collapse so it does not vanish mid-slide.
+  .mega {
+    position: static;
+    display: grid;
+    grid-template-rows: 0fr;
+    padding-top: 0;
+    opacity: 1;
+    visibility: hidden;
+    transform: none;
+    pointer-events: auto;
+    transition:
+      grid-template-rows 0.35s var(--ease-out-quint),
+      visibility 0s linear 0.35s;
+  }
+
+  .has-mega.is-open .mega {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s, 0s;
+  }
+
+  .mega-inner {
+    display: block;
+    width: auto;
+    max-width: none;
+    min-height: 0;
+    overflow: hidden;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  // Inset panel with a rail down its left edge, so an open section reads as
+  // belonging to the row above it rather than as more top-level items
+  .mega-links {
+    margin: 4px 0 6px 26px;
+    padding: 12px 10px 12px 14px;
+    border-left: 2px solid rgba(53, 180, 234, 0.35);
+    border-radius: 0 12px 12px 0;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .mega-label {
+    margin-bottom: 8px;
+    padding-left: 10px;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .mega-list,
+  .mega-list-2col {
+    display: block;
+  }
+
+  .mega-link {
+    min-height: 48px;
+    padding: 8px 10px;
+    color: rgba(255, 255, 255, 0.86);
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--white);
+    }
+  }
+
+  .mega-link-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-accent);
+    font-size: var(--fs-base);
+  }
+
+  .mega-link:hover .mega-link-icon {
+    background: var(--color-accent);
+    color: var(--color-navy);
+  }
+
+  // Promo card is desktop furniture — in a drawer it just pushes the actual
+  // navigation off the screen
+  .mega-feature {
+    display: none;
+  }
+
+  // The accordions live inside the drawer, so an open one must not also fire
+  // the mega menu's page-dimming or force the bar solid
+  .navbar-main.has-open-mega {
+    background: transparent;
+  }
+
+  .navbar-main.navbar-fixed.has-open-mega {
+    background: var(--color-navy);
+  }
+
+  .has-open-mega .nav-backdrop {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  // The scrim covers the bar, but a sliver shows above the drawer during the
+  // slide, so the bar still needs its own background
+  .navbar-main.is-nav-open {
+    background: var(--color-navy);
+  }
+}
+
+// ─── Drawer on touch: no lingering hover ─────────────────────────────────────
+// Android holds :hover on the last-tapped element until something else is
+// tapped, so a row the user opened and closed again sits there still looking
+// picked. Only the hover tint is neutralised — aria-expanded and .active are
+// real states and keep theirs. Scoped to the drawer width on purpose: above it
+// the same classes style the light desktop panel, where these colours would be
+// white on white.
+@media (max-width: 991px) and (hover: none) {
+  .navbar-nav .nav-link:hover {
+    background: transparent;
+  }
+
+  .navbar-nav .nav-link:hover .nav-link-icon {
+    background: rgba(255, 255, 255, 0.09);
+    color: var(--color-accent);
+  }
+
+  .mega-link:hover {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  .mega-link:hover .mega-link-icon {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-accent);
+  }
+
+  .drawer-action:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar-main {
+    padding: 10px 0 0;
+  }
+
+  .navbar-top {
+    gap: 12px;
+    padding-bottom: 12px;
+  }
+
+  .navbar-brand img {
+    width: 132px;
+  }
+
+  // The panel is full-height from here too; only its width tightens
+  .navbar-menu {
+    width: min(90vw, 340px);
+  }
+}
+
+@media (max-width: 575px) {
+  // Only the language switch and the toggler earn their place at this width
+  .navbar-action:not(.navbar-lang),
+  .navbar-divider {
+    display: none;
+  }
+
+  .navbar-brand img {
+    width: 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mega {
+    transform: none;
+    transition:
+      opacity 0.2s ease-out,
+      visibility 0s linear 0.2s;
+  }
+
+  .has-mega.is-open .mega {
+    transform: none;
+  }
+
+  .has-mega .mega-link,
+  .has-mega .mega-card {
+    opacity: 1;
+    transform: none;
+    transition:
+      background 0.25s ease-out,
+      color 0.25s ease-out;
+  }
+
+  .mega-card-media img,
+  .mega-link-icon,
+  .mega-card-link i {
+    transition: none;
+  }
+
+  .mega-card:hover .mega-card-media img,
+  .mega-link:hover .mega-link-icon,
+  .mega-card:hover .mega-card-link i {
+    transform: none;
+  }
+
+  // The drawer still needs to open and close — it just does so without the
+  // slide, and without rows arriving one after another
+  .navbar-menu,
+  .mega {
+    transition-duration: 0.01s;
+  }
+
+  .navbar-nav > li,
+  .navbar-drawer-foot {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0s !important;
+  }
+
+  .navbar-toggler span {
+    transition: none;
+  }
+}
+
+.btn-demo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 26px;
+  border-radius: 8px;
+  background: var(--color-accent);
+  color: var(--white);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  transition:
+    transform 0.35s var(--ease-out-quint),
+    background 0.3s ease-out,
+    box-shadow 0.35s var(--ease-out-quint);
+
+  &:hover {
+    background: #1d9bd6;
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(53, 180, 234, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+    transition-duration: 0.08s;
+  }
+}
+

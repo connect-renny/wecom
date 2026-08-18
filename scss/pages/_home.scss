@@ -864,32 +864,18 @@
     align-items: stretch;
   }
 
-  // One per row: two columns leaves roughly 150px a cell, which the longer
-  // figures and labels ("99.99%", "Installation Completed") cannot hold
-  .fact-grid {
-    grid-template-columns: 1fr;
+  // Stays 2x2 down to the smallest widths — stacking the four into full-width
+  // rows spends a lot of height on very little content. The figures are what
+  // set the floor: "99.99%" is the widest of them, and at 30px it comes to
+  // ~107px against the ~124px a cell has to give at 320px wide. The 2x2
+  // dividers and the interior "+" all still describe the layout, so the base
+  // rules are left alone here.
+  .fact-card {
+    padding: 22px 12px 26px;
   }
 
-  .fact-card {
-    padding: 24px 4px 26px;
-
-    // The 2x2 dividers no longer describe the layout — nothing sits beside a
-    // card any more, and the interior "+" has no intersection left to mark
-    &:nth-child(odd) {
-      border-right: 0;
-    }
-
-    &:not(:last-child) {
-      border-bottom: 1px solid var(--color-border-soft);
-    }
-
-    &:last-child {
-      border-bottom: 0;
-    }
-
-    &:nth-child(1)::after {
-      display: none;
-    }
+  .fact-number {
+    font-size: var(--fs-2xl);
   }
 }
 

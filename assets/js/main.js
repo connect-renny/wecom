@@ -54,6 +54,56 @@ function unlockScroll() {
   setTimeout(dismiss, 8000);
 })();
 
+// ─── Page transition (inner pages) ───────────────────────────────────────────
+//
+// Pages without the preloader fade in from the stylesheet on their own. This
+// only handles the way out — which every page gets, the home page included, so
+// leaving it for an inner page is the same short fade: hold the current page on
+// screen for the length of that fade, then let the browser follow the link.
+(function () {
+  var root = document.documentElement;
+
+  var FADE_MS = 220;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var leaving = false;
+
+  // Restored from the back/forward cache the page keeps whatever classes it had
+  // when it was frozen — clear the exit state so it does not come back blank.
+  window.addEventListener("pageshow", function (e) {
+    if (e.persisted) {
+      leaving = false;
+      root.classList.remove("is-leaving");
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    if (leaving || reduceMotion.matches) return;
+    if (e.defaultPrevented || e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+    var link = e.target.closest("a");
+    if (!link || !link.href || link.hasAttribute("download")) return;
+    if (link.target && link.target !== "_self") return;
+
+    // Anything that is not a plain navigation to another page here — in-page
+    // anchors, mailto:, tel:, external sites — is left to the browser
+    var url = new URL(link.href, location.href);
+    if (url.origin !== location.origin) return;
+    if (url.protocol !== "http:" && url.protocol !== "https:") return;
+    if (url.pathname === location.pathname && url.search === location.search) {
+      return;
+    }
+
+    e.preventDefault();
+    leaving = true;
+    root.classList.add("is-leaving");
+
+    setTimeout(function () {
+      location.href = link.href;
+    }, FADE_MS);
+  });
+})();
+
 // ─── Mobile nav toggle ───────────────────────────────────────────────────────
 var navToggler = document.querySelector(".navbar-toggler");
 var navMenu = document.getElementById("primaryNav");
@@ -839,13 +889,18 @@ if (industriesEl) {
   updateDrift();
 })();
 
-// ─── Products grid — one shade that floats to the hovered card ───────────────
-(function () {
-  var grid = document.querySelector(".products-grid");
-  if (!grid) return;
+// ─── One shade that floats to the hovered card ───────────────────────────────
+// Used by the products grid on the home page and the Key Highlights strip on
+// the inside pages. `root` carries .is-shaded and owns the mouseleave; the
+// shade is positioned against whatever the cards report as their offsetParent,
+// so root must be that element or must contain it with nothing positioned in
+// between.
+function floatingShade(rootSelector, shadeSelector, cardSelector) {
+  var root = document.querySelector(rootSelector);
+  if (!root) return;
 
-  var shade = grid.querySelector(".products-shade");
-  var cards = grid.querySelectorAll(".product-card");
+  var shade = root.querySelector(shadeSelector);
+  var cards = root.querySelectorAll(cardSelector);
   if (!shade || !cards.length) return;
 
   function moveTo(card, slide) {
@@ -869,19 +924,22 @@ if (industriesEl) {
 
   Array.prototype.forEach.call(cards, function (card) {
     card.addEventListener("mouseenter", function () {
-      moveTo(card, grid.classList.contains("is-shaded"));
-      grid.classList.add("is-shaded");
+      moveTo(card, root.classList.contains("is-shaded"));
+      root.classList.add("is-shaded");
     });
   });
 
-  grid.addEventListener("mouseleave", function () {
-    grid.classList.remove("is-shaded");
+  root.addEventListener("mouseleave", function () {
+    root.classList.remove("is-shaded");
   });
 
   window.addEventListener("resize", function () {
-    grid.classList.remove("is-shaded");
+    root.classList.remove("is-shaded");
   });
-})();
+}
+
+floatingShade(".products-grid", ".products-shade", ".product-card");
+floatingShade(".highlights-grid-wrap", ".highlights-shade", ".highlight-card");
 
 // ─── Key Pillars slider ──────────────────────────────────────────────────────
 var pillarsEl = document.querySelector(".swiper-pillars");

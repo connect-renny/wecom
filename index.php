@@ -9,6 +9,9 @@ $pageTitle = 'Wecom';
 $metaDesc  = "Wecom is Oman's AI-powered cloud communications platform for business calling, customer engagement, contact centre operations, collaboration, reporting and enterprise integration.";
 $navActive = 'home';
 
+// The full preloader runs here only; inner pages use the short fade instead.
+$showPreloader = true;
+
 include 'includes/head.php';
 include 'includes/header.php';
 ?>

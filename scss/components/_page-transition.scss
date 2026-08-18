@@ -1,0 +1,41 @@
+// ─── Inner-page transition ────────────────────────────────────────────────────
+//
+// The curtain preloader is reserved for the home page. Every other page fades
+// in on arrival instead, and every page — home included — fades back out while
+// the browser fetches the next one, so moving around the site reads as one
+// continuous move rather than a hard cut.
+//
+// The entry is a CSS animation rather than a JS-toggled class, so a page is
+// never left invisible if the script fails to load. Only opacity is animated —
+// a transform on <body> would make it the containing block for the fixed
+// floating buttons and pin them to the document instead of the viewport.
+
+html.has-page-fade body {
+  animation: pageFadeIn 0.4s ease-out both;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Set by JS the moment an internal link is followed, then held until the next
+// document paints over this one.
+html.is-leaving body {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.22s ease-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.has-page-fade body,
+  html.is-leaving body {
+    animation: none;
+    opacity: 1;
+    transition: none;
+  }
+}

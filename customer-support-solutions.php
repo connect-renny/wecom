@@ -78,11 +78,9 @@ include 'includes/section-hero-inside.php';
     </div>
 
     <!-- ═══ FAQ ═══ -->
-    <!-- Same block as the home page, on the same glow backdrop -->
-    <div class="glow-bg-3">
+    <!-- No backdrop wrapper here: the wash on the inside pages is the one
+         behind the detail rows, and the FAQ sits on plain white after it. -->
 <?php include 'includes/section-faq.php'; ?>
-    </div>
-    <!-- /.glow-bg-3 -->
 
 <?php
 include 'includes/section-cta.php';

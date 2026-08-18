@@ -3,12 +3,16 @@
  * Document head and the opening of <body>, up to and including the preloader.
  *
  * Expects (all optional):
- *   $pageTitle  string  browser title; falls back to the site name
- *   $metaDesc   string  meta description
+ *   $pageTitle      string  browser title; falls back to the site name
+ *   $metaDesc       string  meta description
+ *   $showPreloader  bool    render the full preloader — home page only. Every
+ *                           other page gets the short fade in components/
+ *                           _page-transition.scss instead.
  */
+$showPreloader = $showPreloader ?? false;
 ?>
 <!doctype html>
-<html lang="en" class="is-preloading">
+<html lang="en" class="<?= $showPreloader ? 'is-preloading' : 'has-page-fade' ?>">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -32,6 +36,7 @@
     <link href="assets/css/style.css" rel="stylesheet" />
   </head>
   <body>
+<?php if ($showPreloader): ?>
     <!-- ═══ Preloader (curved sheet peels up off the page) ═══ -->
     <div class="loader-overlay">
       <div class="loader-logo">
@@ -79,3 +84,4 @@
         <path d="M0,0 Q500,180 1000,0 Z" />
       </svg>
     </div>
+<?php endif; ?>

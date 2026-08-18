@@ -20,13 +20,15 @@ if (!$featureRows) {
           <div class="feature-rows">
 <?php foreach ($featureRows as $row): ?>
             <article class="feature-row">
-              <div class="feature-body" data-aos="fade-up">
-                <h2 class="feature-title"><?= htmlspecialchars($row['title']) ?></h2>
-                <p class="feature-lead">
+              <!-- Staggered a line at a time rather than as one block, so the
+                   copy builds while the artwork beside it wipes open -->
+              <div class="feature-body">
+                <h2 class="feature-title" data-aos="fade-up"><?= htmlspecialchars($row['title']) ?></h2>
+                <p class="feature-lead" data-aos="fade-up" data-aos-delay="80">
                   <?= htmlspecialchars($row['lead']) ?>
                 </p>
 <?php if (!empty($row['note'])): ?>
-                <p class="feature-note">
+                <p class="feature-note" data-aos="fade-up" data-aos-delay="140">
                   <?= htmlspecialchars($row['note']) ?>
                 </p>
 <?php endif; ?>

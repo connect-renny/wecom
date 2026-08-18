@@ -20,15 +20,23 @@ if (!$highlights) {
         <div class="container">
           <h2 class="highlights-title" data-aos="fade-up"><?= htmlspecialchars($highlightsTitle ?? 'Key Highlights') ?></h2>
 
-          <ul class="highlights-grid">
+          <!-- The shade is a sibling of the list rather than a child of it, as
+               it is on the products grid. The divider rules at the narrow steps
+               are written with :nth-child, which counts every sibling — an extra
+               element inside the <ul> would shift each card's index by one and
+               put the rules in the wrong places. -->
+          <div class="highlights-grid-wrap">
+            <span class="highlights-shade" aria-hidden="true"></span>
+            <ul class="highlights-grid">
 <?php foreach ($highlights as $i => $item): ?>
-            <li class="highlight-card" data-aos="fade-up"<?= $i ? ' data-aos-delay="' . ($i * 80) . '"' : '' ?>>
-              <span class="highlight-icon">
-                <img src="assets/images/<?= htmlspecialchars($item['icon']) ?>" alt="" />
-              </span>
-              <p class="highlight-label"><?= htmlspecialchars($item['label']) ?></p>
-            </li>
+              <li class="highlight-card" data-aos="fade-up"<?= $i ? ' data-aos-delay="' . ($i * 80) . '"' : '' ?>>
+                <span class="highlight-icon">
+                  <img src="assets/images/<?= htmlspecialchars($item['icon']) ?>" alt="" />
+                </span>
+                <p class="highlight-label"><?= htmlspecialchars($item['label']) ?></p>
+              </li>
 <?php endforeach; ?>
-          </ul>
+            </ul>
+          </div>
         </div>
       </section>

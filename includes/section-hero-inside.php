@@ -67,8 +67,15 @@ $last = count($crumbs) - 1;
             </div>
           </div>
 
-          <!-- Right: the shared pieces arranged around this page's figure -->
-          <div class="hero-inside-visual-col">
+          <!-- Right: the shared pieces arranged around this page's figure.
+               The whole column comes in as one piece, last in the stagger, so
+               the floating bits are not each animated against the parallax
+               transform they already carry. -->
+          <div
+            class="hero-inside-visual-col"
+            data-aos="fade-up"
+            data-aos-delay="260"
+          >
             <div class="hero-inside-visual">
 <?php include __DIR__ . '/hero-piece-arc.php'; ?>
 <?php include __DIR__ . '/hero-piece-glitter.php'; ?>

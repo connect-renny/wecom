@@ -533,33 +533,52 @@
 // between them, the same way .glow-bg spans Trusted + About + Products on the
 // home page. Built from gradients rather than a bitmap so it rescales with the
 // block instead of cropping.
+// Every bloom is kept wholly inside the block vertically — centre ± vertical
+// radius stays within 0–100% — so the wash has faded back to white before the
+// seam at either end. An ellipse that runs past the edge gets sliced off by it,
+// and the straight line that leaves behind reads as a band of colour butting
+// into the next section rather than as a glow. Sideways is a different matter:
+// the blooms are meant to bleed off the left and right, which has no seam to
+// give the cut away. The mid stop is what makes the falloff look like light —
+// two stops ramp the alpha in a straight line, which has a visible hard centre.
 .glow-inside {
   background:
+    // top right — held below the top edge (1%–23%)
     radial-gradient(
-      ellipse 40% 16% at 92% 4%,
-      rgba(222, 212, 246, 0.55),
-      rgba(222, 212, 246, 0) 100%
-    ),
+        ellipse 40% 11% at 92% 12%,
+        rgba(222, 212, 246, 0.55),
+        rgba(222, 212, 246, 0.24) 55%,
+        rgba(222, 212, 246, 0) 100%
+      ),
+    // left, second row (20%–44%)
     radial-gradient(
-      ellipse 30% 12% at 4% 30%,
-      rgba(212, 240, 227, 0.5),
-      rgba(212, 240, 227, 0) 100%
-    ),
+        ellipse 30% 12% at 4% 32%,
+        rgba(212, 240, 227, 0.5),
+        rgba(212, 240, 227, 0.22) 55%,
+        rgba(212, 240, 227, 0) 100%
+      ),
+    // left, third row (46%–70%)
     radial-gradient(
-      ellipse 28% 12% at 2% 58%,
-      rgba(246, 226, 238, 0.45),
-      rgba(246, 226, 238, 0) 100%
-    ),
+        ellipse 28% 12% at 2% 58%,
+        rgba(246, 226, 238, 0.45),
+        rgba(246, 226, 238, 0.2) 55%,
+        rgba(246, 226, 238, 0) 100%
+      ),
+    // right, fourth row (55%–85%)
     radial-gradient(
-      ellipse 36% 15% at 98% 70%,
-      rgba(230, 218, 246, 0.5),
-      rgba(230, 218, 246, 0) 100%
-    ),
+        ellipse 36% 15% at 98% 70%,
+        rgba(230, 218, 246, 0.5),
+        rgba(230, 218, 246, 0.22) 55%,
+        rgba(230, 218, 246, 0) 100%
+      ),
+    // bottom left — finishes above the highlights strip, clear of the bottom
+    // edge (68%–92%)
     radial-gradient(
-      ellipse 32% 14% at 6% 96%,
-      rgba(226, 218, 246, 0.45),
-      rgba(226, 218, 246, 0) 100%
-    ),
+        ellipse 32% 12% at 6% 80%,
+        rgba(226, 218, 246, 0.45),
+        rgba(226, 218, 246, 0.2) 55%,
+        rgba(226, 218, 246, 0) 100%
+      ),
     var(--white);
 }
 
@@ -762,12 +781,51 @@
 }
 
 .highlights-title {
-  margin: 0 0 100px;
+  // 70 + the card's 34px top padding is the ~104px the design leaves between
+  // the heading and the icons
+  margin: 0 0 70px;
   font-size: var(--fs-7xl);
   font-weight: var(--fw-semibold);
   line-height: 1.15;
   text-align: center;
   color: var(--color-heading);
+}
+
+// Holds the shade behind the list. The list itself is left unpositioned on
+// purpose: that makes this the cards' offsetParent, so the offsets JS reads off
+// a card are already in the shade's coordinate space.
+.highlights-grid-wrap {
+  position: relative;
+
+  // Shade is visible only while the pointer is inside the strip
+  &.is-shaded .highlights-shade {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+// One tint for the whole strip — JS slides it behind the hovered card. Same
+// treatment as .products-shade on the home page; see the note there on why the
+// position goes on `translate` rather than `transform`.
+.highlights-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  background-color: rgba(53, 180, 234, 0.25);
+  z-index: 0; // always under the cards
+  opacity: 0;
+  scale: 0.88;
+  pointer-events: none;
+  will-change: translate, scale, width, height;
+  transition:
+    translate 0.45s cubic-bezier(0.32, 0.72, 0.24, 1),
+    width 0.45s cubic-bezier(0.32, 0.72, 0.24, 1),
+    height 0.45s cubic-bezier(0.32, 0.72, 0.24, 1),
+    // no overshoot — the shade must never spill past its cell borders
+    scale 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
 }
 
 // minmax(0, …) rather than a bare 1fr: a bare 1fr floors each column at its
@@ -785,7 +843,14 @@
 // cell to do it. The rules still read as separated because the labels are
 // centred, so short ones leave their own margin
 .highlight-card {
-  padding: 4px 10px 34px;
+  position: relative;
+  z-index: 1; // above the tint (which sits at 0)
+  // Top matches the bottom so the content sits centred in the cell. It used to
+  // be 4px, which was fine while the cell was invisible but left the icon flush
+  // against the top edge of the shade — and the icon lifts 6px on hover, so it
+  // broke the edge altogether. The title's margin below absorbs the extra 30px,
+  // keeping the gap between heading and icons where the design has it.
+  padding: 34px 10px;
   text-align: center;
 
   // Rules sit between the cells, so the outer edges stay open
@@ -803,7 +868,9 @@
   margin-bottom: 38px;
   background: var(--color-icon-bg);
   border-radius: 10px;
-  transition: transform 0.5s var(--ease-back);
+  transition:
+    background var(--transition-duration) ease-out,
+    transform 0.5s var(--ease-back);
 
   img {
     width: 26px;
@@ -811,7 +878,10 @@
   }
 }
 
+// The icon box is a pale blue that all but disappears once the cyan shade is
+// behind it, so it goes white on hover — as the product cards' icons do.
 .highlight-card:hover .highlight-icon {
+  background: var(--white);
   transform: translateY(-6px) scale(1.08);
 }
 
@@ -833,24 +903,27 @@
     padding-bottom: 115px;
   }
 
+  // Each step keeps the top padding equal to the bottom, so the icon never sits
+  // flush against the top of the shade; the heading's margin gives back what
+  // the padding adds, holding the gap between the two where the design has it.
   .highlights-title {
-    margin-bottom: 84px;
+    margin-bottom: 58px;
     font-size: var(--fs-6xl);
   }
 
   .highlight-card {
-    padding: 4px 10px 30px;
+    padding: 30px 10px;
   }
 }
 
 @media (max-width: 1199px) {
   .highlights-title {
-    margin-bottom: 64px;
+    margin-bottom: 42px;
     font-size: var(--fs-5xl);
   }
 
   .highlight-card {
-    padding: 4px 8px 26px;
+    padding: 26px 8px;
   }
 
   .highlight-icon {
@@ -890,7 +963,10 @@
       border-left: 1px solid var(--color-border-soft);
     }
 
-    &:nth-child(-n + 3) {
+    // Only the cells that have a card beneath them. Five items over three
+    // columns leaves the last row holding two, so a plain "row one gets a rule"
+    // (:nth-child(-n + 3)) drew the third of them over empty space.
+    &:not(:nth-last-child(-n + 3)) {
       border-bottom: 1px solid var(--color-border-soft);
     }
   }

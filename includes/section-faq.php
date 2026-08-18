@@ -1,7 +1,9 @@
 <?php
 /**
- * FAQ accordion. Same block on the home page and the inside pages; each page
- * supplies its own backdrop wrapper (.glow-bg-3) around it.
+ * FAQ accordion. Same block on the home page and the inside pages. The home
+ * page wraps it in .glow-bg-3, which it shares with the sections above it; the
+ * inside pages leave it on plain white, so their only wash is .glow-inside
+ * behind the detail rows.
  */
 ?>
       <!-- ═══ FAQ ═══ -->

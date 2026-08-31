@@ -158,7 +158,6 @@ include 'includes/header.php';
                   stroke-width="77"
                 />
               </svg>
-              <div class="hero-sound-wave" aria-hidden="true"></div>
               <span class="hero-glitter-card">
                 <!-- Inline SVG so each star can animate with its own delay -->
                 <svg
@@ -185,11 +184,74 @@ include 'includes/header.php';
                   />
                 </svg>
               </span>
-              <img
-                class="hero-woman"
-                src="assets/images/hero-woman.png"
-                alt="Customer support agent"
-              />
+              <!-- Tower, fort and dish sit on one square stage that tracks
+                   the ring's size, so the group scales with it as one piece -->
+              <div class="hero-landmarks">
+                <!-- Gulls drift across the ring; one glyph reused per bird -->
+                <svg
+                  class="hero-birds"
+                  viewBox="0 0 160 155"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <defs>
+                    <path
+                      id="heroBird"
+                      d="M-9,3.2C-5.8,-0.6 -2.8,-1.8 0,1.1C2.8,-1.8 5.8,-0.6 9,3.2C5.2,0.8 2.2,1.4 0,3.4C-2.2,1.4 -5.2,0.8 -9,3.2Z"
+                    />
+                  </defs>
+                  <g fill="#ffffff">
+                    <g transform="translate(16.9 12.2) rotate(-40) scale(0.9)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(140.8 30.6) rotate(-20) scale(0.85)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(23.5 38.4) rotate(-35) scale(0.9)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(122.8 38.7) rotate(-35) scale(0.9)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(8.6 47.0) rotate(-45) scale(0.95)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(124.9 54.0) rotate(-58) scale(0.8)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(71.7 67.0) rotate(-45) scale(0.9)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(99.6 76.6) rotate(-55) scale(0.8)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(62.0 84.5) rotate(-30) scale(0.85)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(20.9 106.4) rotate(-15) scale(0.8)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                    <g transform="translate(85.4 143.7) rotate(-8) scale(0.85)">
+                      <use class="hero-bird" href="#heroBird" />
+                    </g>
+                  </g>
+                </svg>
+                <img
+                  class="hero-landmark hero-landmark-fort"
+                  src="assets/images/hero-fort.png"
+                  alt="Historic Omani fort"
+                />
+                <img
+                  class="hero-landmark hero-landmark-tower"
+                  src="assets/images/hero-tower.png"
+                  alt="Telecom transmission tower"
+                />
+                <img
+                  class="hero-landmark hero-landmark-dish"
+                  src="assets/images/hero-antenna.png"
+                  alt="Satellite ground station antenna"
+                />
+              </div>
             </div>
           </div>
         </div>

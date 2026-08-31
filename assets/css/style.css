@@ -1868,6 +1868,22 @@ html.is-leaving body {
     opacity: 0.3;
   }
 }
+@keyframes birdsIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.95;
+  }
+}
+@keyframes birdFlap {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.5);
+  }
+}
 @keyframes soundWave {
   0% {
     transform: scaleY(1);
@@ -2261,8 +2277,9 @@ html.is-leaving body {
 }
 
 .hero-visual {
+  --hero-ring: min(500px, 34.7vw - 5px);
   position: relative;
-  height: 540px;
+  height: calc(var(--hero-ring) + 40px);
   pointer-events: none;
 }
 .hero-visual > img,
@@ -2276,18 +2293,48 @@ html.is-leaving body {
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: 500px;
+  width: var(--hero-ring);
   height: auto;
 }
-.hero-visual .hero-woman {
+.hero-visual .hero-landmarks {
   bottom: 0;
   left: 0;
   right: 0;
-  width: 310px;
+  width: var(--hero-ring);
+  aspect-ratio: 1;
   margin: 0 auto;
+  z-index: 2;
+}
+.hero-visual .hero-landmarks > * {
+  position: absolute;
+}
+.hero-visual .hero-landmark {
+  height: auto;
   transform-origin: bottom center;
-  z-index: 3;
-  animation: riseIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  animation: riseIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* The stage matches the ring box exactly, so these are ring units (n / 506):
+   the fort is cut to the ring's inner circle, and at 327/506 wide with its arc
+   centre on the stage centre that cut lands right on the stroke's inside edge */
+.hero-visual .hero-landmark-fort {
+  left: 19.071%;
+  top: 34.783%;
+  width: 64.625%;
+  animation-delay: 0.3s;
+}
+.hero-visual .hero-landmark-tower {
+  left: -5.04%;
+  bottom: 7.115%;
+  width: 30.435%;
+  z-index: 2;
+  animation-delay: 0.42s;
+}
+.hero-visual .hero-landmark-dish {
+  left: 63.735%;
+  bottom: 6.126%;
+  width: 55.336%;
+  z-index: 2;
+  animation-delay: 0.54s;
 }
 .hero-visual .hero-half-circle {
   top: 8%;
@@ -2296,7 +2343,7 @@ html.is-leaving body {
   height: auto;
 }
 .hero-visual .hero-half-circle,
-.hero-visual .hero-sound-wave,
+.hero-visual .hero-birds,
 .hero-visual .hero-glitter-card {
   transform: translate3d(var(--px, 0), var(--py, 0), 0);
   transition: transform 0.35s ease-out;
@@ -2306,20 +2353,24 @@ html.is-leaving body {
   -webkit-mask: conic-gradient(from 0deg at 50% 50%, transparent calc(360deg - var(--arc, 0deg)), #000 0);
   mask: conic-gradient(from 0deg at 50% 50%, transparent calc(360deg - var(--arc, 0deg)), #000 0);
 }
-.hero-visual .hero-sound-wave {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  left: -70px;
-  top: 70px;
-  width: 280px;
-  height: 36px;
+.hero-visual .hero-birds {
+  left: 46.542%;
+  top: 5.534%;
+  width: 31.621%;
+  height: auto;
+  opacity: 0.95;
+  animation: birdsIn 1.4s ease-out 0.9s both;
 }
-.hero-visual .hero-sound-wave span {
-  flex: 1;
-  border-radius: 2px;
-  background: #4fc4f5;
-  animation: soundWave ease-in-out infinite alternate;
+.hero-visual .hero-birds .hero-bird {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: birdFlap 2.4s ease-in-out infinite;
+}
+.hero-visual .hero-birds g:nth-child(2n) .hero-bird {
+  animation-delay: -0.8s;
+}
+.hero-visual .hero-birds g:nth-child(3n) .hero-bird {
+  animation-delay: -1.5s;
 }
 .hero-visual .hero-glitter-card {
   display: flex;
@@ -2358,15 +2409,6 @@ html.is-leaving body {
   .hero .hero-title {
     font-size: var(--fs-8xl);
   }
-  .hero-visual {
-    height: 500px;
-  }
-  .hero-visual .hero-circle {
-    width: 450px;
-  }
-  .hero-visual .hero-woman {
-    width: 285px;
-  }
 }
 @media (max-width: 1199px) {
   .hero .hero-inner {
@@ -2379,23 +2421,9 @@ html.is-leaving body {
   .hero .hero-title {
     font-size: var(--fs-7xl);
   }
-  .hero-visual {
-    height: 450px;
-  }
-  .hero-visual .hero-circle {
-    width: 400px;
-  }
-  .hero-visual .hero-woman {
-    width: 250px;
-  }
   .hero-visual .hero-half-circle {
     right: -40px;
     width: 180px;
-  }
-  .hero-visual .hero-sound-wave {
-    left: -40px;
-    top: 55px;
-    width: 220px;
   }
   .hero-visual .hero-glitter-card {
     left: 10px;
@@ -2433,7 +2461,14 @@ html.is-leaving body {
     bottom: 28px;
   }
   .hero-visual {
-    height: 430px;
+    --hero-ring: 400px;
+  }
+  /* The dish overhangs the stage on the right, so nudge the group back left.
+     The ring moves with it — the fort is cut to the ring's inner circle, so the
+     two have to travel together or the cut stops lining up. */
+  .hero-visual .hero-circle,
+  .hero-visual .hero-landmarks {
+    transform: translateX(-7%);
   }
 }
 @media (max-width: 767px) {
@@ -2453,24 +2488,12 @@ html.is-leaving body {
     gap: 12px;
   }
   .hero-visual {
-    height: 360px;
-  }
-  .hero-visual .hero-circle {
-    width: 320px;
-  }
-  .hero-visual .hero-woman {
-    width: 210px;
+    --hero-ring: min(320px, 100vw - 120px);
   }
   .hero-visual .hero-half-circle {
     top: 4%;
     right: -10px;
     width: 140px;
-  }
-  .hero-visual .hero-sound-wave {
-    left: 0;
-    top: 40px;
-    width: 170px;
-    height: 28px;
   }
   .hero-visual .hero-glitter-card {
     top: 26%;
@@ -2493,15 +2516,9 @@ html.is-leaving body {
     align-items: stretch;
   }
   .hero-visual {
-    height: 320px;
+    --hero-ring: min(275px, 100vw - 150px);
   }
-  .hero-visual .hero-circle {
-    width: 275px;
-  }
-  .hero-visual .hero-woman {
-    width: 185px;
-  }
-  .hero-visual .hero-sound-wave {
+  .hero-visual .hero-birds {
     display: none;
   }
   .hero-visual .hero-glitter-card {

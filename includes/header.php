@@ -316,6 +316,7 @@ if (!function_exists('nav_active')) {
                 </a>
               </li>
 
+              <?php /* Industries — hidden from the main menu for now
               <li class="has-mega">
                 <a
                   class="nav-link<?= nav_active('industries') ?>"
@@ -411,6 +412,7 @@ if (!function_exists('nav_active')) {
                   </div>
                 </div>
               </li>
+              */ ?>
 
               <li>
                 <a class="nav-link<?= nav_active('integrations') ?>" href="#">

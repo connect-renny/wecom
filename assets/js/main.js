@@ -420,19 +420,6 @@ if (returnTopButton) {
   });
 }
 
-// ─── Hero sound-wave bars ────────────────────────────────────────────────────
-var soundWave = document.querySelector(".hero-sound-wave");
-if (soundWave) {
-  for (var i = 0; i < 56; i++) {
-    var bar = document.createElement("span");
-    bar.style.height = 6 + Math.round(Math.random() * 26) + "px";
-    bar.style.opacity = (0.45 + Math.random() * 0.55).toFixed(2);
-    bar.style.animationDuration = (0.6 + Math.random() * 0.9).toFixed(2) + "s";
-    bar.style.animationDelay = (Math.random() * -1.5).toFixed(2) + "s";
-    soundWave.appendChild(bar);
-  }
-}
-
 // ─── Hero half-circle: rounded progress-bar reveal ───────────────────────────
 function revealArc(el, delay, duration) {
   var startTime = null;
@@ -572,7 +559,7 @@ var heroEl = document.querySelector(".hero");
 if (heroEl) {
   var floatLayers = [
     { el: document.querySelector(".hero-half-circle"), depth: 20 },
-    { el: document.querySelector(".hero-sound-wave"), depth: 32 },
+    { el: document.querySelector(".hero-birds"), depth: 32 },
     { el: document.querySelector(".hero-glitter-card"), depth: 46 },
   ].filter(function (layer) {
     return layer.el;

@@ -2322,20 +2322,6 @@ html.is-leaving body {
   width: 64.625%;
   animation-delay: 0.3s;
 }
-.hero-visual .hero-landmark-tower {
-  left: -5.04%;
-  bottom: 7.115%;
-  width: 30.435%;
-  z-index: 2;
-  animation-delay: 0.42s;
-}
-.hero-visual .hero-landmark-dish {
-  left: 63.735%;
-  bottom: 6.126%;
-  width: 55.336%;
-  z-index: 2;
-  animation-delay: 0.54s;
-}
 .hero-visual .hero-half-circle {
   top: 8%;
   right: -70px;
@@ -2462,13 +2448,6 @@ html.is-leaving body {
   }
   .hero-visual {
     --hero-ring: 400px;
-  }
-  /* The dish overhangs the stage on the right, so nudge the group back left.
-     The ring moves with it — the fort is cut to the ring's inner circle, so the
-     two have to travel together or the cut stops lining up. */
-  .hero-visual .hero-circle,
-  .hero-visual .hero-landmarks {
-    transform: translateX(-7%);
   }
 }
 @media (max-width: 767px) {

@@ -184,8 +184,8 @@ include 'includes/header.php';
                   />
                 </svg>
               </span>
-              <!-- Tower, fort and dish sit on one square stage that tracks
-                   the ring's size, so the group scales with it as one piece -->
+              <!-- The fort sits on a square stage that tracks the ring's
+                   size, so the group scales with it as one piece -->
               <div class="hero-landmarks">
                 <!-- Gulls drift across the ring; one glyph reused per bird -->
                 <svg
@@ -240,16 +240,6 @@ include 'includes/header.php';
                   class="hero-landmark hero-landmark-fort"
                   src="assets/images/hero-fort.png"
                   alt="Historic Omani fort"
-                />
-                <img
-                  class="hero-landmark hero-landmark-tower"
-                  src="assets/images/hero-tower.png"
-                  alt="Telecom transmission tower"
-                />
-                <img
-                  class="hero-landmark hero-landmark-dish"
-                  src="assets/images/hero-antenna.png"
-                  alt="Satellite ground station antenna"
                 />
               </div>
             </div>
